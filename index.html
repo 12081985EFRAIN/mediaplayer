@@ -355,6 +355,8 @@ header{
         0 0 60px currentColor;
 }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
 </head>
 
 <body>
@@ -810,14 +812,50 @@ BOLIVIA
 <a href="#" onclick="abrirPlayer('https://stv2.boliviaplay.com.bo/hls/stream.m3u8');return false;">
 PTV
 </a>
+</div>
 
 </div>
+<div class="card">
+<div style="display: flex; justify-content: center; width: 100%;">
+    <img src="LOGOS/fifa.png" alt="Descripción de la imagen" style="width: auto; height: 150px; object-fit: cover;">
+</div>
+<div class="boton" onclick="window.open('iptv_player.html','_blank');">
+IPTV PLAYER
+</div>
+</div>
+
+
+
 </div>
 
 <footer>
 
 © TVDeporte 2026 v1.0
 
+<script>
+const f=document.getElementById('m3uFile');
+f.addEventListener('change',e=>{
+ const file=e.target.files[0]; if(!file)return;
+ file.text().then(t=>{
+  const lines=t.split(/\r?\n/); let name='';
+  iptvList.innerHTML='';
+  for(const l of lines){
+    if(l.startsWith('#EXTINF')) name=l.split(',').pop();
+    else if(l.startsWith('http')){
+      const b=document.createElement('button');
+      b.textContent=name||l;
+      b.onclick=()=>playM3U8(l);
+      iptvList.appendChild(b);
+    }
+  }
+ });
+});
+function playM3U8(u){
+ const v=document.getElementById('iptvVideo');
+ if(Hls.isSupported()){const h=new Hls();h.loadSource(u);h.attachMedia(v);h.on(Hls.Events.MANIFEST_PARSED,()=>v.play());}
+ else{v.src=u;v.play();}
+}
+</script>
 </footer>
 <div id="visorPlayer" class="visor-overlay">
 
